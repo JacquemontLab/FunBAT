@@ -175,6 +175,7 @@ def run_regression_model(data, formula, pheno_type, conditional_column):
         data (pd.DataFrame): The dataframe containing the number of genes disrupted by category (gene-set and/or LOEUF cat) per individual + their phenotypes.
         formula (str): The formula for the regression.
         pheno_type (str): The type of phenotype.
+        conditional_column (str): The column to use for the conditional logistic regression.
     Returns:
         pd.DataFrame: The results of the regression.
     '''
@@ -191,7 +192,11 @@ def run_regression_model(data, formula, pheno_type, conditional_column):
 
     elif pheno_type == 'continuous':
         try:
-            reg = sm.gls(formula, data=data).fit()
+            if conditional_column is not None:
+                model = sm.mixedlm(formula, data, groups=data[conditional_column])
+                reg = model.fit()
+            else:
+                reg = sm.gls(formula, data=data).fit()
         except Exception as e:
             print("Error: ", e)
             return pd.DataFrame(), None
