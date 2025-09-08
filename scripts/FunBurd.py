@@ -180,7 +180,7 @@ def FunBAT_multiple_gene_sets(phenotype_table: pd.DataFrame,
     return results_df
 
 
-def bootstraped_FunBAT(phenotype_table: pd.DataFrame,
+def bootstrapped_FunBAT(phenotype_table: pd.DataFrame,
                         phenotype_column_name: str,
                         variants_table: pd.DataFrame,
                         gene_list: list,

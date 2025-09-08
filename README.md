@@ -47,6 +47,9 @@ After installation, you can import the module in your Python scripts:
 ```python
 import FunBAT
 ```
+FunBAT_one_gene_set
+FunBAT_one_gene_set_wih_name
+bootstrapped_FunBAT
 
 ## Functions
 
@@ -157,13 +160,13 @@ FunBAT_multiple_gene_sets(phenotype_table: pd.DataFrame,
  |------|-------------|
  | `pd.DataFrame` | DataFrame containing the results of the burden analysis with each line representing a covariate association with the phenotype for each gene set. |
 
-### Function Documentation: `bootstraped_FunBAT`
+### Function Documentation: `bootstrapped_FunBAT`
 
 #### Description
-The `bootstraped_FunBAT` function performs a bootstrap burden analysis for a list of genes. It creates bootstrap samples of the gene list, performs a burden analysis for each sample, and returns the results. This function is useful for assessing the robustness of the burden analysis results.
+The `bootstrapped_FunBAT` function performs a bootstrap burden analysis for a list of genes. It creates bootstrap samples of the gene list, performs a burden analysis for each sample, and returns the results. This function is useful for assessing the robustness of the burden analysis results.
 
 ```python
-bootstraped_FunBAT(phenotype_table: pd.DataFrame,
+bootstrapped_FunBAT(phenotype_table: pd.DataFrame,
                    phenotype_column_name: str,
                    variants_table: pd.DataFrame,
                    gene_list: list,
