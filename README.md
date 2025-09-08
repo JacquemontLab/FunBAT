@@ -1,7 +1,7 @@
 # FunBAT
 
 Functional Burden Association Test
-![FunBAT.png](FunBAT.png)
+![FunBAT_v2.png](FunBAT_v2.png)
 
 ## Description
 Compute the functional burden of a biological function for a phenotype.
