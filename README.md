@@ -1,4 +1,4 @@
-# FunBAT
+# Functional Burden Association Test (FunBAT)
 
 Functional Burden Association Test
 ![FunBAT_v2.png](FunBAT_v2.png)
