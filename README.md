@@ -1,6 +1,6 @@
 # FunBAT
 
-Functionnal Burden Association Test
+Functional Burden Association Test
 ![FunBAT.png](FunBAT.png)
 
 ## Description
@@ -47,9 +47,14 @@ After installation, you can import the module in your Python scripts:
 ```python
 import FunBAT
 ```
-FunBAT_one_gene_set
-FunBAT_one_gene_set_wih_name
-bootstrapped_FunBAT
+
+This package contains the following main functions:
+- FunBAT_one_gene_set: To compute the functional burden association test on one gene set.
+- FunBAT_one_gene_set_wih_name: To compute the functional burden association test on one named gene set.
+- FunBAT_multiple_gene_sets: Parallelized version to compute the functional burden association test on multiple gene sets at once.
+- bootstrapped_FunBAT: Bootstrap version of the functional burden association test for one gene set. Used to assess the contribution of each gene in the gene set to the overall burden association.
+
+More details on how to use each function can be found in the associated jupyter notebook `FunBAT_example.ipynb`.
 
 ## Functions
 
