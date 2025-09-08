@@ -1,5 +1,7 @@
-# FunBurd
-![FunBurd.png](FunBurd.png)
+# FunBAT
+
+Functionnal Burden Association Test
+![FunBAT.png](FunBAT.png)
 
 ## Description
 Compute the functional burden of a biological function for a phenotype.
@@ -8,8 +10,8 @@ Compute the functional burden of a biological function for a phenotype.
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/JacquemontLab/FunBurd.git
-   cd FunBurd
+   git clone https://github.com/JacquemontLab/FunBAT.git
+   cd FunBAT
    ```
 
 2. **Create a Virtual Environment (Optional but Recommended)**:
@@ -43,18 +45,18 @@ These dependencies will be automatically installed when you run `pip install -r 
 
 After installation, you can import the module in your Python scripts:
 ```python
-import FunBurd
+import FunBAT
 ```
 
 ## Functions
 
-### Function Documentation: `FunBurd_one_gene_set`
+### Function Documentation: `FunBAT_one_gene_set`
 
 #### Description
-The `FunBurd_one_gene_set` function performs a burden analysis for a single gene set. It takes phenotype and variant data, collapses the variants into gene sets, and runs a regression model to assess the association between the gene burden and the phenotype. The function can handle both continuous and binary phenotypes and allows for the inclusion of covariates and interaction terms.
+The `FunBAT_one_gene_set` function performs a burden analysis for a single gene set. It takes phenotype and variant data, collapses the variants into gene sets, and runs a regression model to assess the association between the gene burden and the phenotype. The function can handle both continuous and binary phenotypes and allows for the inclusion of covariates and interaction terms.
 
 ```python
-FunBurd_one_gene_set(phenotype_table: pd.DataFrame,
+FunBAT_one_gene_set(phenotype_table: pd.DataFrame,
                          phenotype_column_name: str,
                          variants_table: pd.DataFrame,
                          gene_list: list,
@@ -69,7 +71,7 @@ FunBurd_one_gene_set(phenotype_table: pd.DataFrame,
    Parameter | Type | Description | Default |
  |-----------|------|-------------|---------|
  | `phenotype_table` | `pd.DataFrame` | DataFrame containing the phenotypical data of each individual (See input example for mandatory columns). | |
- | `phenotype_column_name` | `str` | Name of the column in the phenotype table that contains the phenotype scores, can be either binary or continous scores, FunBurd will run accordingly. | |
+ | `phenotype_column_name` | `str` | Name of the column in the phenotype table that contains the phenotype scores, can be either binary or continous scores, FunBAT will run accordingly. | |
  | `variants_table` | `pd.DataFrame` | DataFrame containing the variants altering each gene for each individual of the analysis. (See input example for mandatory columns) | |
  | `gene_list` | `list` | List of genes to collapse as a unique functional group and used for the burden analysis. | |
  | `keep_all_regression_results` | `bool` | If `False`, will only keep the results of the regression model for the gene burden. If `True`, will keep all the results of the regression model (including covariates and interactions terms). | `False` |
@@ -83,13 +85,13 @@ FunBurd_one_gene_set(phenotype_table: pd.DataFrame,
  |------|-------------|
  | `pd.DataFrame` | DataFrame containing the results of the burden analysis with each line representing a covariate association with the phenotype. |
 
-### Function Documentation: `FunBurd_one_gene_set_wih_name`
+### Function Documentation: `FunBAT_one_gene_set_wih_name`
 
 #### Description
-The `FunBurd_one_gene_set_wih_name` function performs a burden analysis for a single gene set with its name. It takes phenotype and variant data, collapses the variants into gene sets, and runs a regression model to assess the association between the gene burden and the phenotype. This function is similar to `FunBurd_one_gene_set` but includes the gene set name in the results.
+The `FunBAT_one_gene_set_wih_name` function performs a burden analysis for a single gene set with its name. It takes phenotype and variant data, collapses the variants into gene sets, and runs a regression model to assess the association between the gene burden and the phenotype. This function is similar to `FunBAT_one_gene_set` but includes the gene set name in the results.
 
 ```python
-FunBurd_one_gene_set_wih_name(phenotype_table: pd.DataFrame,
+FunBAT_one_gene_set_wih_name(phenotype_table: pd.DataFrame,
                              phenotype_column_name: str,
                              variants_table: pd.DataFrame,
                              genes_item: list,
@@ -118,13 +120,13 @@ FunBurd_one_gene_set_wih_name(phenotype_table: pd.DataFrame,
  |------|-------------|
  | `pd.DataFrame` | DataFrame containing the results of the burden analysis with each line representing a covariate association with the phenotype for the gene set. |
 
-### Function Documentation: `FunBurd_multiple_gene_sets`
+### Function Documentation: `FunBAT_multiple_gene_sets`
 
 #### Description
-The `FunBurd_multiple_gene_sets` function performs a burden analysis for multiple gene sets in parallel. It takes phenotype and variant data, collapses the variants into gene sets, and runs a regression model to assess the association between the gene burden and the phenotype for each gene set. This function allows for parallel processing to speed up the analysis.
+The `FunBAT_multiple_gene_sets` function performs a burden analysis for multiple gene sets in parallel. It takes phenotype and variant data, collapses the variants into gene sets, and runs a regression model to assess the association between the gene burden and the phenotype for each gene set. This function allows for parallel processing to speed up the analysis.
 
 ```python
-FunBurd_multiple_gene_sets(phenotype_table: pd.DataFrame,
+FunBAT_multiple_gene_sets(phenotype_table: pd.DataFrame,
                           phenotype_column_name: str,
                           variants_table: pd.DataFrame,
                           gene_sets_dict: dict,
@@ -155,13 +157,13 @@ FunBurd_multiple_gene_sets(phenotype_table: pd.DataFrame,
  |------|-------------|
  | `pd.DataFrame` | DataFrame containing the results of the burden analysis with each line representing a covariate association with the phenotype for each gene set. |
 
-### Function Documentation: `bootstraped_FunBurd`
+### Function Documentation: `bootstraped_FunBAT`
 
 #### Description
-The `bootstraped_FunBurd` function performs a bootstrap burden analysis for a list of genes. It creates bootstrap samples of the gene list, performs a burden analysis for each sample, and returns the results. This function is useful for assessing the robustness of the burden analysis results.
+The `bootstraped_FunBAT` function performs a bootstrap burden analysis for a list of genes. It creates bootstrap samples of the gene list, performs a burden analysis for each sample, and returns the results. This function is useful for assessing the robustness of the burden analysis results.
 
 ```python
-bootstraped_FunBurd(phenotype_table: pd.DataFrame,
+bootstraped_FunBAT(phenotype_table: pd.DataFrame,
                    phenotype_column_name: str,
                    variants_table: pd.DataFrame,
                    gene_list: list,
@@ -265,7 +267,7 @@ The phenotyping dataframe contains phenotypic information and covariates for eac
 
 ### Single Gene Set Input
 
-For functions analyzing individual gene sets (`FunBurd_one_gene_set` and `FunBurd_one_gene_set_wih_name`), the gene set should be provided as:
+For functions analyzing individual gene sets (`FunBAT_one_gene_set` and `FunBAT_one_gene_set_wih_name`), the gene set should be provided as:
 
 #### Format
 - A simple Python list of gene identifiers
@@ -283,7 +285,7 @@ gene_list = [
 
 ### Multiple Gene Sets Input
 
-For functions analyzing multiple gene sets (FunBurd_multiple_gene_sets), the input should be structured as:
+For functions analyzing multiple gene sets (FunBAT_multiple_gene_sets), the input should be structured as:
 
 #### Format
 
