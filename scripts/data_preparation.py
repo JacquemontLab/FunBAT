@@ -15,7 +15,7 @@ def get_phenotype_type(phenotype_df, pheno_column_name):
     return pheno_type
 
 
-def check_mandatory_columns(phenotype_table, variants_table, phenotype_column_name, list_covariantes, interaction_term, family_id_column):
+def check_mandatory_columns(phenotype_table, variants_table, phenotype_column_name, list_covariates, interaction_term, family_id_column):
     # Check the mandatory columns in the different tables
     if 'SampleID' not in phenotype_table.columns:
         raise ValueError("Phenotype table must contain 'SampleID' column.")
@@ -26,8 +26,8 @@ def check_mandatory_columns(phenotype_table, variants_table, phenotype_column_na
     if phenotype_column_name not in phenotype_table.columns:
         raise ValueError(
             f"Phenotype table must contain '{phenotype_column_name}' column.")
-    if list_covariantes is not None:
-        for covariate in list_covariantes:
+    if list_covariates is not None:
+        for covariate in list_covariates:
             if covariate not in phenotype_table.columns:
                 raise ValueError(
                     f"Phenotype table must contain the '{covariate}' column.")
