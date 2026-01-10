@@ -9,7 +9,7 @@ from tqdm import tqdm
 import statsmodels.stats.multitest as ssm
 
 
-def FunBAT_one_gene_set(phenotype_table: pd.DataFrame,
+def run_one_gene_set(phenotype_table: pd.DataFrame,
                          phenotype_column_name: str,
                          variants_table: pd.DataFrame,
                          gene_list: list,
@@ -70,7 +70,7 @@ def FunBAT_one_gene_set(phenotype_table: pd.DataFrame,
     return model_result
 
 
-def FunBAT_one_gene_set_wih_name(phenotype_table: pd.DataFrame,
+def run_one_gene_set_wih_name(phenotype_table: pd.DataFrame,
                                   phenotype_column_name: str,
                                   variants_table: pd.DataFrame,
                                   genes_item: list,
@@ -95,7 +95,7 @@ def FunBAT_one_gene_set_wih_name(phenotype_table: pd.DataFrame,
         pd.DataFrame: DataFrame containing the results of the burden analysis with each line representing a covariate association with the phenotype for the gene set.
     """
     
-    result = FunBAT_one_gene_set(
+    result = run_one_gene_set(
         phenotype_table=phenotype_table,
         phenotype_column_name=phenotype_column_name,
         variants_table=variants_table,
@@ -112,7 +112,7 @@ def FunBAT_one_gene_set_wih_name(phenotype_table: pd.DataFrame,
     return result
 
 
-def FunBAT_multiple_gene_sets(phenotype_table: pd.DataFrame,
+def run_multiple_gene_sets(phenotype_table: pd.DataFrame,
                                phenotype_column_name: str,
                                variants_table: pd.DataFrame,
                                gene_sets_dict: dict,
@@ -148,7 +148,7 @@ def FunBAT_multiple_gene_sets(phenotype_table: pd.DataFrame,
     if n_cpus > 1:
         gene_sets_items = list(gene_sets_dict.items())
 
-        results = Parallel(n_jobs=n_cpus, batch_size=4)(delayed(FunBAT_one_gene_set_wih_name)(
+        results = Parallel(n_jobs=n_cpus, batch_size=4)(delayed(run_one_gene_set_wih_name)(
             phenotype_table=phenotype_table,
             phenotype_column_name=phenotype_column_name,
             variants_table=variants_table,
@@ -163,7 +163,7 @@ def FunBAT_multiple_gene_sets(phenotype_table: pd.DataFrame,
         for gene_set_item in gene_sets_dict.items():
             print(f"Processing gene set: {gene_set_item[0]}")
 
-            result = FunBAT_one_gene_set_wih_name(
+            result = run_one_gene_set_wih_name(
                 phenotype_table=phenotype_table,
                 phenotype_column_name=phenotype_column_name,
                 variants_table=variants_table,
@@ -180,7 +180,7 @@ def FunBAT_multiple_gene_sets(phenotype_table: pd.DataFrame,
     return results_df
 
 
-def bootstrapped_FunBAT(phenotype_table: pd.DataFrame,
+def run_bootstrapped(phenotype_table: pd.DataFrame,
                         phenotype_column_name: str,
                         variants_table: pd.DataFrame,
                         gene_list: list,
@@ -235,7 +235,7 @@ def bootstrapped_FunBAT(phenotype_table: pd.DataFrame,
     bootstrap_samples_df = pd.DataFrame({'bootstrap_idx': bootstrap_samples.keys(),
                                          'genes': bootstrap_samples.values()})
 
-    results = FunBAT_multiple_gene_sets(
+    results = run_multiple_gene_sets(
         phenotype_table=phenotype_table,
         phenotype_column_name=phenotype_column_name,
         variants_table=variants_table,
