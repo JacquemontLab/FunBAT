@@ -157,7 +157,8 @@ def run_multiple_gene_sets(phenotype_table: pd.DataFrame,
             list_covariates=list_covariates,
             interaction_column=interaction_column,
             column_for_conditional=column_for_conditional,
-            correction_outside_gene_set=correction_outside_gene_set) for gene_set_item in tqdm(gene_sets_items, desc="Processing gene sets"))
+            correction_outside_gene_set=correction_outside_gene_set) 
+            for gene_set_item in tqdm(gene_sets_items, desc="Processing gene sets"))
     else:
         results = []
         for gene_set_item in gene_sets_dict.items():

@@ -60,7 +60,7 @@ def add_outside_gene_set_correction(annotated_collapsed_genes, variants_table, g
     variants_outside_gene_set = variants_table[~variants_table['Gene'].isin(
         gene_list)]
 
-    list_cat_outisde = list(set(correction_dictionary.values()))
+    list_cat_outisde = list(set(correction_dictionary.keys()))
     for cat in list_cat_outisde:
         list_genes_in_cat = [
             gene for gene, category in correction_dictionary.items() if category == cat]
