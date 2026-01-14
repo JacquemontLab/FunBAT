@@ -1,8 +1,8 @@
 import pandas as pd
 
-import scripts.Burden_fcts as Burden_fcts
-import scripts.data_preparation as data_preparation
-import scripts.bootstap_functions as bootstrap_functions
+import funbat.Burden_fcts as Burden_fcts
+import funbat.data_preparation as data_preparation
+import funbat.bootstap_functions as bootstrap_functions
 
 from joblib import Parallel, delayed
 from tqdm import tqdm
@@ -13,6 +13,7 @@ def run_one_gene_set(phenotype_table: pd.DataFrame,
                          phenotype_column_name: str,
                          variants_table: pd.DataFrame,
                          gene_list: list,
+                         stratify_gene_set: dict = None,
                          keep_all_regression_results: bool = False,
                          list_covariates: list = None,
                          interaction_column: list = None,
@@ -25,6 +26,7 @@ def run_one_gene_set(phenotype_table: pd.DataFrame,
         phenotype_column_name (str): Name of the column in the phenotype table that contains the phenotype scores (Can be either continuous or binary, the model will adapt accordingly).
         variants_table (pd.DataFrame): DataFrame containing the variants altering each gene for each individual of the analysis.
         gene_list (list): List of genes to collapse as a unique functional group and used for the burden analysis. The names of the genes have to match the 'Gene' column in the variants table.
+        stratify_gene_set (dict): Dictionary containing the categories of the genes in the gene set. If not None, the gene set will be stratified according to the categories provided. The keys of the dictionary are the names of the categories and the values are lists of genes belonging to each category. Default is None.
         keep_all_regression_results (bool): If False, will only keep the results of the regression model for the gene burden. If True, will keep all the results of the regression model (including covariates and interactions). Default is False.
         list_covariates (list): List of covariates to include in the regression model in addition of the gene burden (Can be ancestry, sex, age, etc.). If not None the column names have to be in the phenotype table. Default is None.
         interaction_column (list): List of columns for interaction terms in the regression model. If not None the column name has to be in the phenotype table. Default is None.
@@ -46,6 +48,7 @@ def run_one_gene_set(phenotype_table: pd.DataFrame,
         'pheno_score': phenotype_column_name,
         'pheno_type': pheno_type,
         'correction_outside_gene_set': correction_outside_gene_set,
+        'stratify_gene_set': stratify_gene_set
     }
 
     # Collapse the variants table to get the burden of the gene set
@@ -55,6 +58,9 @@ def run_one_gene_set(phenotype_table: pd.DataFrame,
         print(
             "No variants found for the provided gene list. Please check the gene names and the variants table.")
         return pd.DataFrame()
+
+    if stratify_gene_set is not None:
+        annotated_collapsed_genes = data_preparation.stratify_main_gene_set(annotated_collapsed_genes, stratify_gene_set,variants_table, gene_list)
 
     if correction_outside_gene_set is not None:
         # If correction outside gene set is provided, we will add the column to the annotated_collapsed_genes
@@ -70,10 +76,11 @@ def run_one_gene_set(phenotype_table: pd.DataFrame,
     return model_result
 
 
-def run_one_gene_set_wih_name(phenotype_table: pd.DataFrame,
+def run_one_gene_set_with_name(phenotype_table: pd.DataFrame,
                                   phenotype_column_name: str,
                                   variants_table: pd.DataFrame,
                                   genes_item: list,
+                                  stratify_gene_set: dict = None,
                                   keep_all_regression_results: bool = False,
                                   list_covariates: list = None,
                                   interaction_column: list = None,
@@ -86,6 +93,7 @@ def run_one_gene_set_wih_name(phenotype_table: pd.DataFrame,
         phenotype_column_name (str): Name of the column in the phenotype table that contains the phenotype scores (Can be either continuous or binary, the model will adapt accordingly).
         variants_table (pd.DataFrame): DataFrame containing the variants altering each gene for each individual of the analysis.
         genes_item (list): List containing the name of the gene set and the list of genes to collapse as a unique functional group for the burden analysis. The first element is the name of the gene set and the second element is the list of genes. The names of the genes have to match the 'Gene' column in the variants table.
+        stratify_gene_set (dict): Dictionary containing the categories of the genes in the gene set. If not None, the gene set will be stratified according to the categories provided. The keys of the dictionary are the names of the categories and the values are lists of genes belonging to each category. Default is None.
         keep_all_regression_results (bool): If False, will only keep the results of the regression model for the gene burden. If True, will keep all the results of the regression model (including covariates and interactions). Default is False.
         list_covariates (list): List of covariates to include in the regression model in addition of the gene burden (Can be ancestry, sex, age, etc.). If not None the column names have to be in the phenotype table. Default is None.
         interaction_column (list): List of columns for interaction terms in the regression model. If not None the column name has to be in the phenotype table. Default is None.
@@ -100,6 +108,7 @@ def run_one_gene_set_wih_name(phenotype_table: pd.DataFrame,
         phenotype_column_name=phenotype_column_name,
         variants_table=variants_table,
         gene_list=genes_item[1],
+        stratify_gene_set=stratify_gene_set,
         keep_all_regression_results=keep_all_regression_results,
         list_covariates=list_covariates,
         interaction_column=interaction_column,
@@ -116,6 +125,7 @@ def run_multiple_gene_sets(phenotype_table: pd.DataFrame,
                                phenotype_column_name: str,
                                variants_table: pd.DataFrame,
                                gene_sets_dict: dict,
+                               stratify_gene_set: dict = None,
                                keep_all_regression_results: bool = False,
                                list_covariates: list = None,
                                interaction_column: list = None,
@@ -129,6 +139,7 @@ def run_multiple_gene_sets(phenotype_table: pd.DataFrame,
         phenotype_column_name (str): Name of the column in the phenotype table that contains the phenotype scores (Can be either continuous or binary, the model will adapt accordingly).
         variants_table (pd.DataFrame): DataFrame containing the variants altering each gene for each individual of the analysis.
         gene_sets_dict (dict): Dictionary where keys are gene set names and values are lists of genes to collapse as unique functional groups for the burden analysis. The names of the genes have to match the 'Gene' column in the variants table.
+        stratify_gene_set (dict): Dictionary containing the categories of the genes in the gene set. If not None, the gene sets will be stratified according to the categories provided. The keys of the dictionary are the names of the categories and the values are lists of genes belonging to each category. Default is None.
         keep_all_regression_results (bool): If False, will only keep the results of the regression model for the gene burden. If True, will keep all the results of the regression model (including covariates and interactions). Default is False.
         list_covariates (list): List of covariates to include in the regression model in addition of the gene burden (Can be ancestry, sex, age, etc.). If not None the column names have to be in the phenotype table. Default is None.
         interaction_column (list): List of columns for interaction terms in the regression model. If not None the column name has to be in the phenotype table. Default is None.
@@ -148,11 +159,12 @@ def run_multiple_gene_sets(phenotype_table: pd.DataFrame,
     if n_cpus > 1:
         gene_sets_items = list(gene_sets_dict.items())
 
-        results = Parallel(n_jobs=n_cpus, batch_size=4)(delayed(run_one_gene_set_wih_name)(
+        results = Parallel(n_jobs=n_cpus)(delayed(run_one_gene_set_with_name)(
             phenotype_table=phenotype_table,
             phenotype_column_name=phenotype_column_name,
             variants_table=variants_table,
             genes_item=gene_set_item,
+            stratify_gene_set=stratify_gene_set,
             keep_all_regression_results=keep_all_regression_results,
             list_covariates=list_covariates,
             interaction_column=interaction_column,
@@ -164,11 +176,12 @@ def run_multiple_gene_sets(phenotype_table: pd.DataFrame,
         for gene_set_item in gene_sets_dict.items():
             print(f"Processing gene set: {gene_set_item[0]}")
 
-            result = run_one_gene_set_wih_name(
+            result = run_one_gene_set_with_name(
                 phenotype_table=phenotype_table,
                 phenotype_column_name=phenotype_column_name,
                 variants_table=variants_table,
                 genes_item=gene_set_item,
+                stratify_gene_set=stratify_gene_set,
                 keep_all_regression_results=keep_all_regression_results,
                 list_covariates=list_covariates,
                 interaction_column=interaction_column,
@@ -189,6 +202,7 @@ def run_bootstrapped(phenotype_table: pd.DataFrame,
                         bootstrap_size: int = None,
                         pvalue_threshold: float = 0.05,
                         return_effect_size_df: bool = False,
+                        stratify_gene_set: dict = None,
                         n_cpus: int = 1,
                         seed: int = None,
                         list_covariates: list = None,
@@ -206,6 +220,8 @@ def run_bootstrapped(phenotype_table: pd.DataFrame,
         bootstrap_size (int): Size of each bootstrap sample. If None, will be set to half the size of the gene list. If larger than the gene list, will raise an error.
         pvalue_threshold (float): P-value threshold for significance. Default is 0.05.
         return_effect_size_df (bool): If True, will return the DataFrame with the effect sizes of the gene sets. Default is False.
+        stratify_gene_set (dict): Dictionary containing the categories of genes. If not None, the gene sets will be stratified according to the categories provided. The keys of the dictionary are the names of the categories and the values are lists of genes belonging to each category. Default is None.
+
         n_cpus (int): Number of CPUs to use for parallel processing. Default is 1 (single-threaded).
         seed (int): Random seed for reproducibility. Default is None.
         list_covariates (list): List of covariates to include in the regression model in addition of the gene burden (Can be ancestry, sex, age, etc.). If not None the column names have to be in the phenotype table. Default is None.
@@ -241,6 +257,7 @@ def run_bootstrapped(phenotype_table: pd.DataFrame,
         phenotype_column_name=phenotype_column_name,
         variants_table=variants_table,
         gene_sets_dict=bootstrap_samples,
+        stratify_gene_set=stratify_gene_set,
         keep_all_regression_results=False,
         list_covariates=list_covariates,
         interaction_column=interaction_column,

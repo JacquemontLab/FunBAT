@@ -60,21 +60,39 @@ def add_outside_gene_set_correction(annotated_collapsed_genes, variants_table, g
     variants_outside_gene_set = variants_table[~variants_table['Gene'].isin(
         gene_list)]
 
-    list_cat_outisde = list(set(correction_dictionary.keys()))
-    for cat in list_cat_outisde:
-        list_genes_in_cat = [
-            gene for gene, category in correction_dictionary.items() if category == cat]
-
+    for category, list_genes in correction_dictionary.items():
         variants_in_cat = variants_outside_gene_set[variants_outside_gene_set['Gene'].isin(
-            list_genes_in_cat)]
+            list_genes)]
         if not variants_in_cat.empty:
             counts_per_individual = variants_in_cat.groupby(
-                'SampleID').size().reset_index(name=f'OutsideGeneSet_{cat}')
+                'SampleID').size().reset_index(name=f'OutsideGeneSet_{category}')
             annotated_collapsed_genes = pd.merge(
                 annotated_collapsed_genes, counts_per_individual, on='SampleID', how='left')
-            annotated_collapsed_genes[f'OutsideGeneSet_{cat}'] = annotated_collapsed_genes[f'OutsideGeneSet_{cat}'].fillna(
+            annotated_collapsed_genes[f'OutsideGeneSet_{category}'] = annotated_collapsed_genes[f'OutsideGeneSet_{category}'].fillna(
                 0)
         else:
             print(
-                f"No variants found outside of the gene set for category '{cat}'.")
+                f"No variants found outside of the gene set for category '{category}'.")
+    return annotated_collapsed_genes
+
+
+def stratify_main_gene_set(annotated_collapsed_genes, stratification_dictionary, variants_table, gene_list):
+    variants_in_gene_set = variants_table[variants_table['Gene'].isin(gene_list)]
+
+    for category, list_genes in stratification_dictionary.items():
+        variants_in_cat = variants_in_gene_set[variants_in_gene_set['Gene'].isin(list_genes)]
+        if not variants_in_cat.empty:
+            counts_per_individual = variants_in_cat.groupby(
+                'SampleID').size().reset_index(name=f'GeneSet_{category}')
+            annotated_collapsed_genes = pd.merge(
+                annotated_collapsed_genes, counts_per_individual, on='SampleID', how='left')
+            
+            annotated_collapsed_genes[f'GeneSet_{category}'] = annotated_collapsed_genes[f'GeneSet_{category}'].fillna(0)
+        else:
+            print(
+                f"No variants found in the gene set for category '{category}'.")
+    
+    # Remove the GeneSet column from the DataFrame
+    annotated_collapsed_genes = annotated_collapsed_genes.drop(columns=['GeneSet'])
+
     return annotated_collapsed_genes

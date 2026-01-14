@@ -41,7 +41,6 @@ def add_interaction_term_and_covariates(formula, other_covariates, interaction_t
     if other_covariates is not None:
         formula_new = f'{pheno} ~ ' + \
             ' + '.join(main_covariates) + ' + ' + ' + '.join(other_covariates)
-        print(f'Formula: {formula_new}')
     else:
         formula_new = formula
     return formula_new
@@ -50,7 +49,7 @@ def add_interaction_term_and_covariates(formula, other_covariates, interaction_t
 def output_model_summary(reg, covariates, keep_all_regression_results):
     indexes = reg.params.index.tolist()
 
-    if not keep_all_regression_results:
+    if not keep_all_regression_results and not covariates == None:
         # Keep only the main covariates and the interaction term
         index_val_of_cov = [indexes.index(idx)
                             for idx in indexes if idx not in covariates]
@@ -78,22 +77,22 @@ def prepare_and_run_model(
 
     pheno_score = options['pheno_score']
     pheno_type = options['pheno_type']
-    if options['correction_outside_gene_set'] is not None:
-        correction_outside_gene_set = options['correction_outside_gene_set']
 
     list_main_covariates = [
         col for col in data.columns if 'GeneSet' in col]
+    
     if len(list_main_covariates) == 0:
         raise ValueError(
             "No 'GeneSet' column found in the data. Please ensure that the data contains a column with the number of genes disrupted by category (gene-set and/or LOEUF cat) per individual.")
 
     formula = "{} ~ {}".format(pheno_score,
                                ' + '.join(list_main_covariates))
-
+    
     if interaction_term is not None or covariates is not None:
         formula = add_interaction_term_and_covariates(
             formula, covariates, interaction_term)
 
+    print(f'The formula used for the regression is: {formula}')
     # Run the linear regression following formula and based on data. Capture error and print exception
     reg, print_output_model = run_regression_model(
         data, formula, pheno_type, conditional_column)
